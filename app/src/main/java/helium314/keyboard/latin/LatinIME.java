@@ -69,6 +69,7 @@ import helium314.keyboard.latin.utils.JniUtils;
 import helium314.keyboard.latin.utils.KtxKt;
 import helium314.keyboard.latin.utils.LeakGuardHandlerWrapper;
 import helium314.keyboard.latin.utils.Log;
+import helium314.keyboard.latin.voice.VoiceInputController;
 import helium314.keyboard.latin.utils.BackgroundGatheringCache;
 import helium314.keyboard.latin.utils.RecapitalizeMode;
 import helium314.keyboard.latin.utils.StatsUtils;
@@ -105,6 +106,8 @@ public class LatinIME extends InputMethodService implements
 
     final Settings mSettings;
     public final KeyboardActionListener mKeyboardActionListener;
+    // HeliBoard Indo: built-in voice typing
+    final VoiceInputController mVoiceInput = new VoiceInputController(this);
     private int mOriginalNavBarColor = 0;
     private int mOriginalNavBarFlags = 0;
 
@@ -614,6 +617,7 @@ public class LatinIME extends InputMethodService implements
 
     @Override
     public void onDestroy() {
+        mVoiceInput.onDestroy();
         mClipboardHistoryManager.onDestroy();
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
@@ -930,6 +934,7 @@ public class LatinIME extends InputMethodService implements
     public void onWindowHidden() {
         super.onWindowHidden();
         Log.i(TAG, "onWindowHidden");
+        mVoiceInput.close();
         closeMainKeyboard();
         clearNavigationBarColor();
     }
@@ -945,6 +950,7 @@ public class LatinIME extends InputMethodService implements
     void onFinishInputViewInternal(final boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         Log.i(TAG, "onFinishInputView");
+        mVoiceInput.close();
         cleanupInternalStateForFinishInput();
     }
 
@@ -1244,7 +1250,11 @@ public class LatinIME extends InputMethodService implements
     // completely replace #onCodeInput.
     public void onEvent(@NonNull final Event event) {
         if (KeyCode.VOICE_INPUT == event.getKeyCode()) {
-            mRichImm.switchToShortcutIme(this);
+            if (VoiceInputController.isAvailable(this)) {
+                mVoiceInput.onVoiceKey();
+            } else {
+                mRichImm.switchToShortcutIme(this);
+            }
         }
         InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event, mKeyboardSwitcher.getKeyboardCapsMode(), mHandler);

@@ -10,11 +10,11 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "helium314.keyboard"
+        applicationId = "id.masrul.heliboard" // HeliBoard Indo: can be installed next to original HeliBoard
         minSdk = 21
         targetSdk = 37
-        versionCode = 4300
-        versionName = "4.3-beta1"
+        versionCode = 430000 + (System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 0) // HeliBoard Indo: grows with every CI build
+        versionName = "4.3-beta1-indo1"
         ndk {
             abiFilters.clear()
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
@@ -22,8 +22,19 @@ android {
         proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
 
+    // HeliBoard Indo: fixed key so new APKs can update the installed one
+    signingConfigs {
+        create("indo") {
+            storeFile = file("indo-release.keystore")
+            storePassword = "heliboardindo"
+            keyAlias = "heliboardindo"
+            keyPassword = "heliboardindo"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("indo")
             isMinifyEnabled = true
             isShrinkResources = false
             isDebuggable = false
@@ -66,7 +77,7 @@ android {
             }
             variant.outputs.forEach { output ->
                 if (output is com.android.build.api.variant.impl.VariantOutputImpl) {
-                    output.outputFileName = "HeliBoard_${defaultConfig.versionName}-${variant.buildType}.apk"
+                    output.outputFileName = "HeliBoardIndo_${defaultConfig.versionName}-${variant.buildType}.apk"
                 }
             }
         }

@@ -23,6 +23,7 @@ import helium314.keyboard.latin.utils.SubtypeSettings
 import helium314.keyboard.latin.utils.getSecondaryLocales
 import helium314.keyboard.latin.utils.locale
 import helium314.keyboard.latin.utils.prefs
+import helium314.keyboard.latin.voice.VoiceInputController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,7 +55,9 @@ class RichInputMethodManager private constructor() {
 
     private var shortcuts = listOf<Shortcut>()
 
-    val isShortcutImeReady get() = shortcuts.isNotEmpty()
+    // HeliBoard Indo: the built-in voice input counts as available voice input
+    val isShortcutImeReady get() = shortcuts.isNotEmpty() ||
+            (this::context.isInitialized && VoiceInputController.isAvailable(context))
 
     fun getEnabledInputMethodSubtypes(imi: InputMethodInfo, allowsImplicitlySelectedSubtypes: Boolean) =
         inputMethodInfoCache.getEnabledInputMethodSubtypeList(imi, allowsImplicitlySelectedSubtypes)
@@ -150,6 +153,7 @@ class RichInputMethodManager private constructor() {
         LanguageOnSpacebarUtils.onSubtypeChanged(richSubtype, implicitlyEnabledSubtype, systemLocale)
         LanguageOnSpacebarUtils.setEnabledSubtypes(SubtypeSettings.getEnabledSubtypes(true))
 
+        VoiceInputController.invalidateAvailability()
         // TODO: Update an icon for shortcut IME
         shortcuts = inputMethodManager.shortcutInputMethodsAndSubtypes.entries.flatMap { (imi, subtypes) ->
             subtypes.map { Shortcut(imi, it) }

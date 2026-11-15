@@ -1,0 +1,52 @@
+name: Build HeliBoard Indo
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Build release APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: HeliBoardIndo-release
+          path: app/build/outputs/apk/release/*.apk
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: HeliBoard Indo build ${{ github.run_number }}
+          body: |
+            APK otomatis dari commit ${{ github.sha }}.
+            Pasang file `HeliBoardIndo_...-release.apk`. Update cukup pasang APK baru di atasnya.
+          files: app/build/outputs/apk/release/*.apk
+
+      - name: Archive reports for failed job
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: '*/build/reports'
+        if: ${{ failure() }}

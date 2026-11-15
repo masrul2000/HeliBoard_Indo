@@ -148,6 +148,12 @@ class KeyboardWrapperView @JvmOverloads constructor(
                 keyboardLeft + keyboardView.measuredWidth,
                 keyboardView.measuredHeight
         )
+        // HeliBoard Indo: the voice panel always covers the whole keyboard area
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child is helium314.keyboard.latin.voice.VoicePanelView)
+                child.layout(0, 0, width, keyboardView.measuredHeight)
+        }
 
         val scale = Settings.getValues().mKeyboardHeightScale
         // scale one-handed mode button height if keyboard height scale is < 80%

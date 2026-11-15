@@ -1,3 +1,20 @@
+# HeliBoard Indo
+
+Fork dari [HeliBoard](https://github.com/HeliBorg/HeliBoard) dengan **ketik suara bawaan Bahasa Indonesia**, seperti mic di Gboard / SwiftKey.
+
+- Tekan ikon mic di toolbar → panel suara muncul di atas keyboard, tanpa pindah ke keyboard lain.
+- Bahasa default **Indonesia** (bisa diganti ke English, Jawa, Sunda lewat chip 🎙 di panel).
+- Dikte terus-menerus: setelah satu kalimat, mic otomatis mendengarkan lagi sampai kamu diam atau ketuk mic.
+- Tanda baca lewat suara: ucapkan "koma", "titik", "tanda tanya", "tanda seru", "titik dua", "baris baru", "paragraf baru" (bisa dimatikan lewat chip "Tanda baca").
+- Huruf kapital otomatis di awal kalimat dan spasi otomatis.
+- Memakai layanan pengenal suara sistem (mis. Google). Keyboard ini sendiri tetap tanpa izin internet; izin yang ditambah hanya **Mikrofon**.
+- Package `id.masrul.heliboard`, jadi bisa dipasang berdampingan dengan HeliBoard asli.
+- APK dibuat otomatis oleh GitHub Actions di tab **Releases** (tag `build-N`).
+
+Lisensi tetap GPL-3.0 seperti HeliBoard. README asli di bawah.
+
+---
+
 # HeliBoard
 HeliBoard is a privacy-conscious and customizable open-source keyboard, based on AOSP / OpenBoard.
 Does not use internet permission, and thus is 100% offline.
