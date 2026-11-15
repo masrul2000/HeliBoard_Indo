@@ -42,13 +42,13 @@ class VoicePanelView(context: Context, private val controller: VoiceInputControl
 
     init {
         val colors = Settings.getValues().mColors
-        val background = ColorUtils.setAlphaComponent(colors.get(ColorType.MAIN_BACKGROUND), 255)
+        val panelBackground = ColorUtils.setAlphaComponent(colors.get(ColorType.MAIN_BACKGROUND), 255)
         textColor = colors.get(ColorType.KEY_TEXT)
         accentColor = colors.get(ColorType.ACTION_KEY_BACKGROUND)
         accentIconColor = colors.get(ColorType.ACTION_KEY_ICON)
         chipColor = colors.get(ColorType.KEY_BACKGROUND)
 
-        setBackgroundColor(background)
+        setBackgroundColor(panelBackground)
         isClickable = true // don't let touches through to the keys below
         isFocusable = true
 
